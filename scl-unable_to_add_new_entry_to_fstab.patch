@@ -1,0 +1,22 @@
+commit 164f9e13f59e845aa00724032e3b5cc0bd0eda87
+Author: Marek 'marx' Grac <mgrac@redhat.com>
+Date:   Wed Jul 28 16:44:19 2010 +0200
+
+    Resolves: #618207 - Unable to add new entry to /etc/fstab
+
+diff --git a/src/Fstab.py b/src/Fstab.py
+index 4f289f2..8d062c3 100644
+--- a/src/Fstab.py
++++ b/src/Fstab.py
+@@ -40,7 +40,10 @@ def __remove_and_replace(mnt_device, new_line):
+     lines = fstab.readlines()
+     fstab.close()
+ 
+-    paths = get_all_paths(mnt_device)
++    if (mnt_device != None):
++        paths = get_all_paths(mnt_device)
++    else:
++        paths = []
+     
+     fstab_new = open(FSTAB_TMP, 'w')
+     for line in lines:

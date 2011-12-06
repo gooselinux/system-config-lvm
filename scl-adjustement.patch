@@ -1,0 +1,25 @@
+From: Marek 'marx' Grac <mgrac@redhat.com>
+Date: Mon, 15 Feb 2010 13:13:51 +0000 (+0100)
+Subject: Resolves: #564554 - Deprecation warning when run from terminal
+X-Git-Url: http://git.fedorahosted.org/git/system-config-lvm.git?p=system-config-lvm.git;a=commitdiff_plain;h=054ff55da742295cefe2224c093a59f3462f7b94;hp=5bc68be8db764e080162f60ca89fdc0ac6ead441
+
+Resolves: #564554 - Deprecation warning when run from terminal
+
+One more warning resolved
+previous fix 58c4fe72247a2a7c4f8fb1a3b6ae7e353c7b291a
+---
+
+diff --git a/src/lv_edit_props.glade b/src/lv_edit_props.glade
+index 5480cc4..0c26958 100644
+--- a/src/lv_edit_props.glade
++++ b/src/lv_edit_props.glade
+@@ -257,7 +257,7 @@
+ 				  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
+ 				  <property name="snap_to_ticks">False</property>
+ 				  <property name="wrap">False</property>
+-				  <property name="adjustment">2 2 8 1 10 10</property>
++				  <property name="adjustment">2 2 8 1 10 0</property>
+ 				</widget>
+ 				<packing>
+ 				  <property name="padding">0</property>
+

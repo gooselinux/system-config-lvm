@@ -1,0 +1,26 @@
+commit e3042f84d85aca1e85391bbb796b00f6e2ef68ed
+Author: Marek 'marx' Grac <mgrac@redhat.com>
+Date:   Fri Apr 2 13:47:54 2010 +0200
+
+    Resolves #578827 - Correcting of localization settings
+
+diff --git a/src/system-config-lvm.py b/src/system-config-lvm.py
+index 76c6dda..cb0d3d6 100755
+--- a/src/system-config-lvm.py
++++ b/src/system-config-lvm.py
+@@ -14,13 +14,10 @@ import signal
+ import string
+ import os
+ 
+-from lvmui_constants import PROGNAME, INSTALLDIR
+-
+-#PROGNAME = "system-config-lvm"
+-#INSTALLDIR="/usr/share/system-config-lvm"
++PROGNAME = "system-config-lvm"
++INSTALLDIR="/usr/share/system-config-lvm"
+ VERSION = "@VERSION@"
+ 
+-
+ ### gettext ("_") must come before import gtk ###
+ import gettext
+ gettext.bindtextdomain(PROGNAME, "/usr/share/locale")

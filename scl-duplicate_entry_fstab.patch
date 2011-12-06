@@ -1,0 +1,57 @@
+commit 163ba58f4f234f2df4a9eb0b6de32b01eb70e4c3
+Author: Marek 'marx' Grac <mgrac@redhat.com>
+Date:   Tue Apr 27 22:09:20 2010 +0200
+
+    Resolves: #571302 - extending a LV creates a duplicate entry in /etc/fstab
+    
+    Function that removes lines in /etc/fstab was extended to accept also
+    other methods for entering same LV.
+
+diff --git a/src/Fstab.py b/src/Fstab.py
+index 74fa3f7..4f289f2 100644
+--- a/src/Fstab.py
++++ b/src/Fstab.py
+@@ -39,6 +39,8 @@ def __remove_and_replace(mnt_device, new_line):
+     fstab = open(FSTAB, 'r')
+     lines = fstab.readlines()
+     fstab.close()
++
++    paths = get_all_paths(mnt_device)
+     
+     fstab_new = open(FSTAB_TMP, 'w')
+     for line in lines:
+@@ -59,7 +61,7 @@ def __remove_and_replace(mnt_device, new_line):
+             fstab_new.write(line + '\n')
+             continue
+         
+-        if words[DEVICE] == mnt_device:
++        if words[DEVICE] in paths:
+             # line needs to be removed/replaced
+             if (new_line != None) and (added == False):
+               fstab_new.write(new_line + '\n')
+@@ -82,11 +84,7 @@ def get_mount_options(dev_path):
+     if dev_path == None:
+         return (None, None, None, None, None, None)
+     
+-    paths = [dev_path]
+-    follow_links_to_target(dev_path, paths)
+-    label = Filesystem.get_fs(dev_path).get_label(dev_path)
+-    if label != None:
+-        paths.append('LABEL=' + label)
++    paths = get_all_paths(dev_path)
+     
+     fstab = open(FSTAB, 'r')
+     lines = fstab.readlines()
+@@ -110,3 +108,12 @@ def get_mount_options(dev_path):
+             return words
+ 
+     return (None, None, None, None, None, None)
++
++def get_all_paths(dev_path):
++    paths = [dev_path]
++    follow_links_to_target(dev_path, paths)
++    label = Filesystem.get_fs(dev_path).get_label(dev_path)
++    if label != None:
++        paths.append('LABEL=' + label)
++
++    return paths

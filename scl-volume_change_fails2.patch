@@ -1,0 +1,51 @@
+From 1aaa5a0e7cb6f8abe02ca320ad28f7ff3d1c845b Mon Sep 17 00:00:00 2001
+From: Marek 'marx' Grac <mgrac@redhat.com>
+Date: Mon, 14 Jun 2010 14:49:00 +0200
+Subject: [PATCH] Resolves: #597593 - Cannot Modify Existing Volume
+
+/dev/vg/lv does not point to same file as is shown in mount
+---
+ src/lvm_model.py |    2 ++
+ src/utilities.py |   12 ++++++------
+ 2 files changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/src/lvm_model.py b/src/lvm_model.py
+index 51fc10b..92f0cfd 100644
+--- a/src/lvm_model.py
++++ b/src/lvm_model.py
+@@ -1051,6 +1051,8 @@ class lvm_model:
+       possible_path = words[0]
+       if possible_path in paths:
+         return words[1]
++      if follow_links_to_target(possible_path, []) in paths:
++        return words[1]
+     return None
+   
+   def is_mirroring_supported(self):
+diff --git a/src/utilities.py b/src/utilities.py
+index 7fcad4c..39525fd 100644
+--- a/src/utilities.py
++++ b/src/utilities.py
+@@ -3,13 +3,13 @@ from execute import execWithCapture, execWithCaptureErrorStatus, execWithCapture
+ 
+ 
+ def follow_links_to_target(path, paths=[]):
+-    o, s = execWithCaptureStatus('/bin/ls', ['/bin/ls', '-l', path])
++    o, s = execWithCaptureStatus('/bin/readlink', ['/bin/readlink', '-e', path])
+     if s == 0:
+-        words = o.strip().split()
+-        if words[0][0] == 'l':
+-            target = words[len(words) - 1]
+-            paths.append(target)
+-            return follow_links_to_target(target, paths)
++        word = o.strip()
++        
++        if word != path:
++            paths.append(word)
++            return follow_links_to_target(word, paths)
+         else:
+             return path
+     else:
+-- 
+1.5.5.6
+

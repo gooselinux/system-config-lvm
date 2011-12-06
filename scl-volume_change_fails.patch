@@ -1,0 +1,22 @@
+commit b1b25c5d5388bce21c915e922454a1b1d5d047dd
+Author: Marek 'marx' Grac <mgrac@redhat.com>
+Date:   Tue Apr 27 21:48:03 2010 +0200
+
+    Resolves: #584985 - Modification of volume size fails
+    
+    Situation when fs can't be extend offline and is not mounted. I was able
+    to reproduce this only when editing code to get into proper branch.
+
+diff --git a/src/InputController.py b/src/InputController.py
+index 4751cdf..6f77627 100644
+--- a/src/InputController.py
++++ b/src/InputController.py
+@@ -2147,7 +2147,7 @@ class LV_edit_props:
+                                     while os.access(tmp_mountpoint, os.F_OK):
+                                         tmp_mountpoint = tmp_mountpoint + '1'
+                                     os.mkdir(tmp_mountpoint)
+-                                    self.command_handler.mount(lv_path, tmp_mountpoint)
++                                    self.command_handler.mount(lv_path, tmp_mountpoint, Filesystem.get_fs(lv_path).fsname)
+                                     self.fs.extend_online(lv_path)
+                                     self.command_handler.unmount(tmp_mountpoint)
+                                     os.rmdir(tmp_mountpoint)
